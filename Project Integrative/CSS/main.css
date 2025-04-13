@@ -1,0 +1,636 @@
+html, body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+body{
+    background-image: url(../IMG/sitebg.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+h3, p{
+    font-family: 'Poppins', sans-serif;
+}
+
+a{
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.header_main{
+    width: 100%;
+    height: 60px;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header_main_logo{
+    width: fit-content;
+    height: 100%;
+    padding-left: 60px;
+    display: flex;
+}
+
+.header_main_logo img{
+    margin-top: 3px;
+    height: 115px;
+    align-self: center;
+    cursor: pointer;
+}
+
+.header_nav{
+    width: fit-content;
+    height: 100%;
+}
+
+.header_nav ul{
+    list-style: none;
+    margin-left: 30px;
+}
+
+.header_nav ul li{
+    display: inline-block;
+    padding: 0 10px; 
+    font-family: "Poppins", sans-serif;
+    font-weight: 550;
+    line-height: 0px; 
+    color: #1e1e1e;
+    cursor: pointer;
+}
+
+.header_nav ul li a{
+    padding: 0 10px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 550;
+    line-height: 30px;
+    color: #1e1e1e;
+    text-decoration: none;
+    display: block;
+    height: 100%;
+}
+
+.header_nav ul li a:hover{
+    color: #f09b17;
+    text-decoration: none;
+}
+
+.header_nav_icons{
+    width: fit-content;
+    height: 100%;
+    padding-right: 60px;
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    cursor: pointer;
+}
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown:hover{
+    color: #f09b17;
+    text-decoration: none;
+}
+
+.dropdown-members {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    list-style: none;
+    padding: 8px 0;
+    min-width: 180px;
+    max-width: 200px;
+    z-index: 1000;
+}
+
+.dropdown-members li {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.dropdown-members li a {
+    display: block;
+    width: 100%;
+    color: #1e1e1e;
+    text-decoration: none;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    padding: 8px 15px;
+}
+
+.dropdown-members li a:hover {
+    color: #f09b17;
+    text-decoration: none;
+}
+
+.dropdown:hover .dropdown-members {
+    display: flex;
+    flex-direction: column;
+}
+
+.header_nav_icons_fb{
+    width: 20px;
+    height: 20px;
+    background-image: url(../IMG/facebook.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header_nav_icons_fb:hover{
+    background-image: url(../IMG/facebook.png);
+}
+
+.header_nav_icons_li{
+    width: 20px;
+    height: 20px;
+    background-image: url(../IMG/linkedin.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header_nav_icons_li:hover{
+    background-image: url(../IMG/linkedin.png);
+}
+
+.header_nav_icons_gh{
+    width: 20px;
+    height: 20px;
+    background-image: url(../IMG/github-sign.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header_nav_icons_gh:hover{
+    background-image: url(../IMG/github-sign.png);
+}
+
+main{
+    padding-top: 40px;
+}
+
+.team_members{
+    text-align: center;
+    padding: 60px 36px 70px 36px;
+}
+
+.team_members h2{
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    text-shadow: 0 0 2px #1e1e1e;
+    margin-top: -3px;
+}
+
+.member_container{
+    width: 100%;
+    height: 470px;
+    background-color: none;
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 34px;
+}
+
+.member1, .member2, .member3, .member4, .member5, .member6{
+    width: 200px;
+    height: 420px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+}
+
+.member1{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/alexis.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
+    transform: scale(1); 
+}
+
+.member1 .info{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-align: left;
+    width: 80%;
+}
+
+.member1 h3{
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.member1 p{
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+    color: #fff;
+}
+
+.member1:hover{
+    width: 240px;
+    height: 460px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/alexis_hover.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.member2{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/alli.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
+    transform: scale(1); 
+}
+
+.member2 .info{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-align: left;
+    width: 80%;
+}
+
+.member2 h3{
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.member2 p{
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+    color: #fff;
+}
+
+.member2:hover{
+    width: 240px;
+    height: 460px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/alli_hover.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.member3{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/shiena.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
+    transform: scale(1); 
+}
+
+.member3 .info{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-align: left;
+    width: 80%;
+}
+
+.member3 h3{
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.member3 p{
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+    color: #fff;
+}
+
+.member3:hover{
+    width: 240px;
+    height: 460px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/shiena_hvoer.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.member4{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/pajo.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
+    transform: scale(1); 
+}
+
+.member4 .info{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-align: left;
+    width: 80%;
+}
+
+.member4 h3{
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.member4 p{
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+    color: #fff;
+}
+
+.member4:hover{
+    width: 240px;
+    height: 460px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/pajo_hover.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.member5{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/rona.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
+    transform: scale(1); 
+}
+
+.member5 .info{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-align: left;
+    width: 80%;
+}
+
+.member5 h3{
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.member5 p{
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+    color: #fff;
+}
+
+.member5:hover{
+    width: 240px;
+    height: 460px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/rona_hover.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.member6{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/carlo.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
+    transform: scale(1); 
+}
+
+.member6 .info{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-align: left;
+    width: 80%;
+    z-index: 2;
+}
+
+.member6 h3{
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.member6 p{
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+    color: #fff;
+}
+
+.member6:hover{
+    width: 240px;
+    height: 460px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/carlo_hover.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.member6::after {
+    content: '';
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(../IMG/carlo_hover.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.member6:hover::after {
+    opacity: 1;
+}
+
+.footer {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    padding: 40px; 
+}
+
+.footer::before {
+    content: "";
+    position: absolute;
+    inset: 0; 
+    background-image: url('../IMG/IMG_1082.jpg');
+    background-size: cover;
+    background-position: center 30%; 
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    z-index: 0;
+}
+.footer_content{
+    width: 100vw;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    z-index: 1;
+    position: relative;
+    padding-left: 80px;
+}
+
+.footer_text{
+    text-align: left;
+    color: #fff;
+}
+
+.footer_text h3{
+    margin-bottom: 28px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.logos_container{
+    position: absolute;
+    top: 20px;
+    right: 280px;
+    bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    z-index: 1;
+}
+
+.logos_container img{
+    width: 140px;
+    height: auto;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}   
+
+.logos_container img:last-child {
+    margin-bottom: 0;
+}
