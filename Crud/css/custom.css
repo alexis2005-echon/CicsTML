@@ -1,0 +1,27 @@
+body {
+  padding-bottom: 20px;
+  background-color: #f8f9fa;
+}
+
+.card {
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.btn-crud {
+  margin-right: 5px;
+}
+
+.table-responsive {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 5px;
+}
+
+.alert {
+  margin-top: 15px;
+}
