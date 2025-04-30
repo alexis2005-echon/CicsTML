@@ -88,8 +88,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Button Styles */
+        html, body{
+            fontfamily: 'Poppins', sans-serif; /* Apply Poppins font */
+        }
+        .btn-primary {
+            background-color: #ff6000 !important;
+            border-color: #ff6000 !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #e69500 !important;
+            border-color: #e69500 !important;
+        }
+
+        .btn-secondary {
+            background-color: black !important;
+            border-color: black !important;
+        }
+
+        .btn-secondary:hover {
+            background-color: #333 !important;
+            border-color: #333 !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -123,7 +149,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </form>
     </div>
-
 
     <?php
     // Include the footer

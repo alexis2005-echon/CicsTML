@@ -91,55 +91,120 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="en">
 
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - D'Plato</title>
-    <!-- Bootstrap CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="../css/custom.css" rel="stylesheet">
     <style>
-    /* Ensure the footer sticks to the bottom */
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-    }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+        }
 
-    body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        scroll-behavior: smooth;
-    }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #fff; /* White background */
+            color: #333; /* Dark text for contrast */
+            scroll-behavior: smooth;
+        }
 
-    .flex-grow-1 {
-        flex: 1;
-    }
+        .flex-grow-1 {
+            flex: 1;
+        }
 
-    footer {
-        margin-top: auto;
-    }
-    .icon-gap {
-        gap: 30px;
-    }
+        /* Navbar styling */
+        .navbar {
+            background-color: #ff6600; /* Orange background */
+        }
+
+        .navbar-brand {
+            color: #fff !important; /* White text */
+        }
+
+        /* Card styling */
+        .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #ff6600; /* Orange header */
+            color: #fff; /* White text */
+        }
+
+        .btn-primary {
+            background-color: #ff6600; /* Orange button */
+            border-color: #ff6600;
+        }
+
+        .btn-primary:hover {
+            background-color: #e65c00; /* Darker orange on hover */
+            border-color: #e65c00;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: auto;
+            background-color: #ff6600; /* Orange background */
+            color: #fff; /* White text */
+            padding: 20px 0;
+        }
+
+        footer a {
+            color: #fff; /* White links */
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Additional styling */
+        .icon-gap {
+            gap: 30px;
+        }
+
+        hr {
+            border: 1px solid #ff6600; /* Orange horizontal line */
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        a.text-decoration-none {
+            color: #ff6600; /* Orange links */
+        }
+
+        a.text-decoration-none:hover {
+            color: #e65c00; /* Darker orange on hover */
+        }
+
+        /* Hover effect for logo */
+        .logo-container:hover {
+            transform: scale(1.1); /* Slight zoom effect */
+        }
+
+        /* Hover effect for D'Plato text */
+        .navbar-brand:hover {
+            color: #ffe6cc !important; /* Lighter shade of orange */
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg" style="background-color: #ff6000 !important;">
         <div class="container d-flex align-items-center" style="gap: 10px;">
-            <!-- Placeholder for the logo/image -->
-            <div class="placeholder-logo" style="width: 120px; height: 50px; background-color: #6c757d; border-radius: 5px;">
-                <!-- You can replace this div with an <img> tag later -->
+            <div class="logo-container" style="width: 120px; height: 50px; border-radius: 5px; overflow: hidden; transition: transform 0.3s;">
+                <img src="../images/1 (1).png" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <!-- Header text/logo -->
-            <a class="navbar-brand fw-bold fs-3" href="login.php">D'Plato</a>
+            <a class="navbar-brand fw-bold fs-3 text-white" href="login.php" style="transition: color 0.3s;">D'Plato</a>
         </div>
     </nav>
     <div class="flex-grow-1">
@@ -148,12 +213,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p class="lead">Your sales management solution</p>
             <p class="lead">Please login to continue</p>
         </div>
-        <hr style="border: 1px solid #ccc; width: 80%; margin: 20px auto;">
+        <hr>
         <div class="container mt-4">
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header">
                             <h4 class="mb-0">Login</h4>
                         </div>
                         <div class="card-body">
@@ -169,19 +234,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <span class="invalid-feedback"><?php echo $username_err; ?></span>
                                 </div>
                                 <div class="form-group">
-                                    <label>Password</label>
+                                <label>Password</label>
                                     <div class="input-group">
                                         <input type="password" name="password" id="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
                                         <button type="button" class="btn btn-outline-secondary" id="togglePassword">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
+                                    <!-- Display the error message below the password field -->
                                     <span class="invalid-feedback"><?php echo $password_err; ?></span>
                                 </div>
                                 <div class="form-group mt-3">
                                     <input type="submit" class="btn btn-primary" value="Login">
                                 </div>
-                                <p class="mt-3">Don't have an account? <a href="register.php">Sign up now</a>.</p>
+                                <p class="mt-3">Don't have an account? <a href="register.php" class="text-decoration-none">Sign up now</a>.</p>
                             </form>
                         </div>
                     </div>
@@ -189,64 +255,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-    <div class="container text-center">
-            <p class="mb-1">&copy; 2023 D'Plato. All rights reserved.</p>
-            <p class="mb-3">Designed by <span class="fw-bold">CicsTML Team</span></p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="#about" class="text-decoration-none text-black">About</a>
-                <span>|</span>
-                <a href="#contact" class="text-decoration-none text-black">Contact</a>
-            </div>
+    <div class="text-center mt-4">
+        <p style="font-size: 0.9rem; color: #333; font-weight: bold; margin-bottom: 0;">
+            © 2025 D'Plato. All rights reserved.
+        </p>
+        <p style="font-size: 0.9rem; color: #ff6600; font-weight: bold;">
+            Designed by <span style="color: #333;">CicsTML Team</span>
+        </p>
     </div>
     <br>
     <br>
     <br>
     <br>
     <br>
-    <br>
-    <br>
-    <footer class="bg-dark text-white py-4">
-        <br>
-        <div id="about" class="container text-center">
+    <footer>
+        <div class="container text-center">
             <h5 class="fw-bold">About D'Plato Sales Management System</h5>
             <p class="mb-0">D'Plato is a sales management system designed to help businesses manage their sales reports efficiently.</p>
             <p>It allows users to create, read, update, and delete sales reports with ease.</p>
+            <hr class="border-secondary my-4" style="width: 80%; margin: 0 auto;">
+            <h5>Contact Us:</h5>
+            <div class="d-flex justify-content-center gap-4 mt-3 icon-gap">
+                <a href="https://www.facebook.com/profile.php?id=61575244903155" target="_blank" class="text-decoration-none text-white mx-3">
+                    <i class="fab fa-facebook fa-2x"></i>
+                </a>
+                <a href="tel:09670488771" class="text-decoration-none text-white mx-3">
+                    <i class="fas fa-phone fa-2x"></i>
+                </a>
+                <a href="mailto:sgtanatoli@gmail.com" class="text-decoration-none text-white mx-3">
+                    <i class="fas fa-envelope fa-2x"></i>
+                </a>
+            </div>
         </div>
-        <hr class="border-secondary my-4" style="width: 80%; margin: 0 auto;">
-        <div id="about" class="container text-center">
-    <h5>Contact Us:</h5>
-    <br>
-    <div id="contact" class="d-flex justify-content-center gap-4 mt-3 icon-gap">
-        <!-- Facebook Icon -->
-        <a href="https://www.facebook.com/profile.php?id=61575244903155" target="_blank" class="text-decoration-none text-white mx-3">
-            <i class="fab fa-facebook fa-2x"></i>
-        </a>
-        <!-- Phone Icon -->
-        <a href="09670488771" class="text-decoration-none text-white mx-3">
-            <i class="fas fa-phone fa-2x"></i>
-        </a>
-        <!-- Gmail Icon -->
-        <a href="mailto:sgtanatoli@gmail.com" class="text-decoration-none text-white mx-3">
-            <i class="fas fa-envelope fa-2x"></i>
-        </a>
-    </div>
-        <br>
     </footer>
     <script>
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
 
-    togglePassword.addEventListener('click', function () {
-        // Toggle the type attribute
-        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordField.setAttribute('type', type);
-
-        // Toggle the eye icon
-        this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-    });
-</script>
+        togglePassword.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+    </script>
 </body>
-
-</html>
 
 </html>

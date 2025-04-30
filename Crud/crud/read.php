@@ -10,6 +10,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
+
 // Include database connection
 require_once "../config/database.php";
 
@@ -26,19 +27,19 @@ $param_types = "i";
 $params = [$_SESSION["id"]];
 
 // Add conditions based on filters
-if (!empty($_GET['date'])) {
+if (!empty($date)) {
     $sql .= " AND DATE(created_at) = ?";
-    $filters[] = $_GET['date'];
+    $filters[] = $date;
     $param_types .= "s";
-} elseif (!empty($_GET['month'])) {
+} elseif (!empty($month)) {
     $sql .= " AND MONTH(created_at) = ? AND YEAR(created_at) = ?";
-    $filters[] = date('m', strtotime($_GET['month']));
-    $filters[] = date('Y', strtotime($_GET['month']));
+    $filters[] = date('m', strtotime($month));
+    $filters[] = date('Y', strtotime($month));
     $param_types .= "ii";
-} elseif (!empty($_GET['week'])) {
+} elseif (!empty($week)) {
     $sql .= " AND WEEK(created_at, 1) = WEEK(?, 1) AND YEAR(created_at) = ?";
-    $filters[] = $_GET['week'] . '-1'; // Convert week to a date
-    $filters[] = date('Y', strtotime($_GET['week'] . '-1'));
+    $filters[] = $week . '-1'; // Convert week to a date
+    $filters[] = date('Y', strtotime($week . '-1'));
     $param_types .= "si";
 }
 
@@ -81,6 +82,36 @@ if ($chartStmt = mysqli_prepare($conn, $chartSql)) {
         while ($row = mysqli_fetch_array($chartResult)) {
             $chartLabels[] = $row['Product_Type'];
             $chartTotals[] = $row['total_sales'];
+        }
+    }
+}
+
+// Prepare data for sales per day of the current month
+$dailySalesLabels = [];
+$dailySalesTotals = [];
+
+if (!empty($_GET['chart_month'])) {
+    $currentYear = date('Y', strtotime($_GET['chart_month']));
+    $currentMonth = date('m', strtotime($_GET['chart_month']));
+} else {
+    $currentYear = date('Y');
+    $currentMonth = date('m');
+}
+
+
+$dailySalesSql = "SELECT DATE(created_at) AS sale_date, SUM(price * Quantity_Sold) AS total_sales 
+                  FROM items 
+                  WHERE user_id = ? AND YEAR(created_at) = ? AND MONTH(created_at) = ? 
+                  GROUP BY sale_date 
+                  ORDER BY sale_date ASC";
+
+if ($dailySalesStmt = mysqli_prepare($conn, $dailySalesSql)) {
+    mysqli_stmt_bind_param($dailySalesStmt, "iii", $_SESSION["id"], $currentYear, $currentMonth);
+    if (mysqli_stmt_execute($dailySalesStmt)) {
+        $dailySalesResult = mysqli_stmt_get_result($dailySalesStmt);
+        while ($row = mysqli_fetch_array($dailySalesResult)) {
+            $dailySalesLabels[] = $row['sale_date'];
+            $dailySalesTotals[] = $row['total_sales'];
         }
     }
 }
@@ -148,10 +179,35 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
     }
 }
 
-// Get the total number of records for pagination
+// Get the total number of records for pagination after applying filters
 $total_sql = "SELECT COUNT(*) AS total FROM items WHERE user_id = ?";
+
+// Add conditions based on filters
+if (!empty($date)) {
+    $total_sql .= " AND DATE(created_at) = ?";
+} elseif (!empty($month)) {
+    $total_sql .= " AND MONTH(created_at) = ? AND YEAR(created_at) = ?";
+} elseif (!empty($week)) {
+    $total_sql .= " AND WEEK(created_at, 1) = WEEK(?, 1) AND YEAR(created_at) = ?";
+}
+
 $total_stmt = mysqli_prepare($conn, $total_sql);
-mysqli_stmt_bind_param($total_stmt, "i", $_SESSION["id"]);
+
+// Bind parameters dynamically based on filters
+if (!empty($date)) {
+    mysqli_stmt_bind_param($total_stmt, "is", $_SESSION["id"], $date);
+} elseif (!empty($month)) {
+    $month_param = date('m', strtotime($month));
+    $year_param = date('Y', strtotime($month));
+    mysqli_stmt_bind_param($total_stmt, "iii", $_SESSION["id"], $month_param, $year_param);
+} elseif (!empty($week)) {
+    $week_param = $week . '-1'; // Convert week to a date
+    $year_param = date('Y', strtotime($week . '-1'));
+    mysqli_stmt_bind_param($total_stmt, "isi", $_SESSION["id"], $week_param, $year_param);
+} else {
+    mysqli_stmt_bind_param($total_stmt, "i", $_SESSION["id"]);
+}
+
 mysqli_stmt_execute($total_stmt);
 $total_result = mysqli_stmt_get_result($total_stmt);
 $total_row = mysqli_fetch_assoc($total_result);
@@ -160,6 +216,29 @@ $total_pages = ceil($total_records / $limit);
 
 // Calculate total sales and percentages
 $total_sales = array_sum($chartTotals);
+
+if (isset($_GET['delete'])) {
+    $delete_id = intval($_GET['delete']); // Sanitize the ID to prevent SQL injection
+
+    // Prepare the delete query
+    $delete_sql = "DELETE FROM items WHERE id = ? AND user_id = ?";
+    if ($delete_stmt = mysqli_prepare($conn, $delete_sql)) {
+        mysqli_stmt_bind_param($delete_stmt, "ii", $delete_id, $_SESSION["id"]);
+
+        // Execute the query
+        if (mysqli_stmt_execute($delete_stmt)) {
+            // Redirect to the same page to refresh the list
+            header("location: read.php");
+            exit;
+        } else {
+            echo '<div class="alert alert-danger">Error: Could not delete the item. Please try again later.</div>';
+        }
+
+        // Close the statement
+        mysqli_stmt_close($delete_stmt);
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -176,30 +255,71 @@ $total_sales = array_sum($chartTotals);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+    /* Button Styles */
+    .btn-primary {
+        background-color: #F4A261 !important; /* Soft orange */
+        border-color: #F4A261 !important;
+    }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+    .btn-primary:hover {
+        background-color: #E76F51 !important; /* Muted orange-red */
+        border-color: #E76F51 !important;
+    }
 
-        .flex-grow-1 {
-            flex: 1;
-        }
+    .btn-danger {
+        background-color: #6D6875 !important; /* Muted gray-purple */
+        border-color: #6D6875 !important;
+    }
 
-        footer {
-            margin-top: auto;
-            padding: 10px 0;
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-        }
-    </style>
+    .btn-danger:hover {
+        background-color: #4A4E69 !important; /* Darker muted gray-purple */
+        border-color: #4A4E69 !important;
+    }
+
+    .btn-success {
+        background-color: #F4A261 !important; /* Soft orange */
+        border-color: #F4A261 !important;
+    }
+
+    .btn-success:hover {
+        background-color: #E76F51 !important; /* Muted orange-red */
+        border-color: #E76F51 !important;
+    }
+
+    /* Table Header Styles */
+    .table thead {
+        background-color: #FFE8D6 !important; /* Light cream */
+        color: #6D6875 !important; /* Muted gray-purple text */
+    }
+
+    /* Pagination Styles */
+    .pagination .page-link {
+        color: #F4A261 !important; /* Soft orange */
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #F4A261 !important; /* Soft orange */
+        border-color: #F4A261 !important;
+        color: white !important; /* Ensure text is visible */
+    }
+
+    /* Header Styles */
+    .card-header {
+        background-color: #F6D7B0 !important; /* Light beige-orange */
+        color: #6D6875 !important; /* Muted gray-purple text */
+    }
+
+    /* Chart Colors */
+    .chart-bar {
+        background-color: rgba(244, 162, 97, 0.5); /* Soft orange */
+        border-color: rgba(244, 162, 97, 1); /* Soft orange */
+    }
+
+    .chart-line {
+        border-color: rgba(231, 111, 81, 1); /* Muted orange-red */
+        background-color: rgba(231, 111, 81, 0.2); /* Muted orange-red */
+    }
+</style>
 </head>
 
 <body>
@@ -211,7 +331,12 @@ $total_sales = array_sum($chartTotals);
     <div class="flex-grow-1">
         <div class="container mt-4">
             <!-- Filter Form -->
-            <form method="GET" action="read.php" class="mb-4">
+            <form id="monthfilterform" method="GET" action="read.php" class="mb-4">
+            <input type="hidden" name="date" value="<?php echo htmlspecialchars($_GET['date'] ?? ''); ?>">
+            <input type="hidden" name="month" value="<?php echo htmlspecialchars($_GET['month'] ?? ''); ?>">
+            <input type="hidden" name="week" value="<?php echo htmlspecialchars($_GET['week'] ?? ''); ?>">
+            <input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['page'] ?? 1); ?>">
+
                 <div class="row align-items-end">
                     <!-- Date Filter -->
                     <div class="col-md-4">
@@ -241,7 +366,7 @@ $total_sales = array_sum($chartTotals);
             <div class="row justify-content-center">
                 <div class="col-md-10">
                     <div class="card">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #ff6000 !important;">
                             <h4 class="mb-0">Item List</h4>
                         </div>
                         <div class="card-body">
@@ -302,43 +427,61 @@ $total_sales = array_sum($chartTotals);
             </div>
         </div>
     </div>
-    <nav>
-    <ul class="pagination justify-content-center">
-            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                    <a class="page-link" href="read.php?page=<?php echo $i; ?>
-                        <?php echo isset($_GET['date']) ? '&date=' . urlencode($_GET['date']) : ''; ?>
-                        <?php echo isset($_GET['month']) ? '&month=' . urlencode($_GET['month']) : ''; ?>
-                        <?php echo isset($_GET['week']) ? '&week=' . urlencode($_GET['week']) : ''; ?>">
-                        <?php echo $i; ?>
-                    </a>
-                </li>
-            <?php endfor; ?>
-        </ul>
-    </nav>
+    <?php if (isset($result) && mysqli_num_rows($result) > 0): // Only show pagination if the current query has results ?>
+        <nav>
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                        <a class="page-link" href="read.php?page=<?php echo $i; ?>
+                            <?php echo !empty(trim($date)) ? '&date=' . urlencode(trim($date)) : ''; ?>
+                            <?php echo !empty(trim($month)) ? '&month=' . urlencode(trim($month)) : ''; ?>
+                            <?php echo !empty(trim($week)) ? '&week=' . urlencode(trim($week)) : ''; ?>">
+                            <?php echo $i; ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
     <hr class="my-4" style="border-top: 2px solid #343a40; width: 80%; margin: auto; border-radius: 5px; 
     background-color: #343a40; height: 2px;">
     <div class="row justify-content-center">
-        <div class="col-md-10">
-            <h4 class="text-center">Sales Summary</h4>
-            <p class="text-center">Total sales for the selected period</p>
-        </div>
+       <div class="col-md-10">
+           <h4 class="text-center">Sales Summary</h4>
+           <p class="text-center">Total sales for the selected period</p>
+       </div>
     </div>
     <div class="row justify-content-center mt-4">
-    <div class="col-md-10">
-        <div class="text-center mb-4">
-        <h5 class="fw-bold">
-            Total sales as of now: Php <?php echo number_format($total_sales, 2); ?>
-        </h5>
-        </div>
-        <div class="text-center mb-4">
-            <h5 class="fw-bold">Sales Insights for <?php echo date('F'); ?></h5>
-            <p>Most-Selling Day: <strong><?php echo $highestSalesDay; ?></strong> | Php <strong><?php echo number_format($highestSalesAmount, 2); ?></strong></p>
-            <p>Least-Selling Day: <strong><?php echo $lowestSalesDay; ?></strong> | Php <strong><?php echo number_format($lowestSalesAmount, 2); ?></strong></p>
-        </div>
-        <canvas id="salesChart" width="400" height="200"></canvas>
+       <div class="col-md-10">
+           <div class="text-center mb-4">
+               <h5 class="fw-bold">
+                   Total sales as of now: Php <?php echo number_format($total_sales, 2); ?>
+               </h5>
+           </div>
+           <div class="text-center mb-4">
+               <h5 class="fw-bold">Sales Insights for <?php echo date('F'); ?></h5>
+               <p>Most-Selling Day: <strong><?php echo $highestSalesDay; ?></strong> | Php <strong><?php echo number_format($highestSalesAmount, 2); ?></strong></p>
+               <p>Least-Selling Day: <strong><?php echo $lowestSalesDay; ?></strong> | Php <strong><?php echo number_format($lowestSalesAmount, 2); ?></strong></p>
+           </div>
+           <hr class="my-4" style="border-top: 2px solid #343a40; width: 80%; margin: auto; border-radius: 5px;
+           background-color: #343a40; height: 2px;">
+           <br>
+           <form method="GET" action="read.php" class="d-flex align-items-center justify-content-end mb-2" style="position: relative; top: -20px;">
+               <label for="chart_month" class="me-2">Select Month:</label>
+               <input type="month" name="chart_month" id="chart_month" class="form-control form-control-sm w-auto" 
+                      value="<?php echo isset($_GET['chart_month']) ? htmlspecialchars($_GET['chart_month']) : date('Y-m'); ?>" 
+                      onchange="this.form.submit();" style="font-size: 0.85rem; padding: 2px 5px;">
+           </form>
+           <div class="d-flex flex-wrap justify-content-center gap-4">
+               <div style="flex: 1; min-width: 300px;">
+                   <canvas id="salesChart" height="200"></canvas>
+               </div>
+               <div style="flex: 1; min-width: 300px;">
+                   <canvas id="dailySalesChart" height="200"></canvas>
+               </div>
+           </div>
+       </div>
     </div>
-</div>
 <br>
 <br>
 <br>
@@ -347,46 +490,64 @@ $total_sales = array_sum($chartTotals);
     // Include header
     require_once "../includes/footer.php";
     ?>
-   <script>
-    // Get the chart data from PHP
+<script>
+    // Data for the first chart (updated to use orange)
     const chartLabels = <?php echo json_encode($chartLabels); ?>;
     const chartTotals = <?php echo json_encode($chartTotals); ?>;
 
-    // Render the chart
     const ctx = document.getElementById('salesChart').getContext('2d');
     const salesChart = new Chart(ctx, {
-        type: 'bar', // Bar chart
+        type: 'bar',
         data: {
-            labels: chartLabels, // Product types
+            labels: chartLabels,
             datasets: [{
-                label: 'Total Sales (in currency)',
-                data: chartTotals, // Total sales for each product type
-                backgroundColor: [
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 99, 132, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 99, 132, 1)'
-                ],
+                label: 'Total Sales (by Product Type)',
+                data: chartTotals,
+                backgroundColor: 'rgba(255, 165, 0, 0.5)', // Orange
+                borderColor: 'rgba(255, 165, 0, 1)', // Orange
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    position: 'top',
-                },
                 title: {
                     display: true,
-                    text: 'Sales Summary by Product Type'
+                    text: 'All-time Sales by Product Type'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // NEW Chart for Daily Sales (updated to use green)
+    const dailyLabels = <?php echo json_encode($dailySalesLabels); ?>;
+    const dailyTotals = <?php echo json_encode($dailySalesTotals); ?>;
+
+    const dailyCtx = document.getElementById('dailySalesChart').getContext('2d');
+    const dailySalesChart = new Chart(dailyCtx, {
+        type: 'line', // Line chart for daily trends
+        data: {
+            labels: dailyLabels,
+            datasets: [{
+                label: 'Total Sales (Daily)',
+                data: dailyTotals,
+                fill: false,
+                borderColor: 'rgba(0, 128, 0, 1)', // Green
+                backgroundColor: 'rgba(0, 128, 0, 0.2)', // Green
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Daily Sales This Month'
                 }
             },
             scales: {

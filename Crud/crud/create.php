@@ -75,6 +75,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>D'Plato -- Create Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/custom.css" rel="stylesheet">
+    <style>
+        /* Button Styles */
+        .btn-primary {
+            background-color: #ff6000 !important;
+            border-color: #ff6000 !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #e69500 !important;
+            border-color: #e69500 !important;
+        }
+
+        .btn-secondary {
+            background-color: black !important;
+            border-color: black !important;
+        }
+
+        .btn-secondary:hover {
+            background-color: #333 !important;
+            border-color: #333 !important;
+        }
+
+        /* Header Styles */
+        .card-header {
+            background-color: #ff6000 !important;
+            color: white !important;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -82,11 +110,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     require_once "../includes/header.php";
     ?>
 
-    <div class="container mt-4">
+    <div class="container mt-4 mb-4">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header bg-primary text-white"><h4 class="mb-0">Create New Sales Report</h4></div>
+                    <div class="card-header text-white"><h4 class="mb-0">Create New Sales Report</h4></div>
                     <div class="card-body">
                         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                             <div class="form-group">
@@ -136,7 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <br>
 </body>
 <?php
-// Include header
+// Include footer
 require_once "../includes/footer.php";
 ?>
 </html>
